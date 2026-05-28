@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HW1</string>
+    <string name="cd_left">Move left</string>
+    <string name="cd_right">Move right</string>
+    <string name="cd_heart">Life</string>
+    <string name="cd_car">Player car</string>
+    <string name="cd_obstacle">Obstacle</string>
+    <string name="crash_message">Crash!</string>
+    <string name="game_over">Game Over — restarting</string>
+</resources>

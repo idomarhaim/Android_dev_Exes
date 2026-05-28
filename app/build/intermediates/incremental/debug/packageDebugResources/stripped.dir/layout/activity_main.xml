@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grass_green"
+    tools:context=".MainActivity">
+
+    <!-- Game area (the road) -->
+    <FrameLayout
+        android:id="@+id/gameArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/road_gray">
+
+        <!-- Lane divider 1 (between lane 0 and lane 1) -->
+        <View
+            android:id="@+id/laneLine1"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/lane_line" />
+
+        <!-- Lane divider 2 (between lane 1 and lane 2) -->
+        <View
+            android:id="@+id/laneLine2"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/lane_line" />
+
+        <!-- Player car -->
+        <ImageView
+            android:id="@+id/car"
+            android:layout_width="64dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/cd_car"
+            android:src="@drawable/ic_car" />
+    </FrameLayout>
+
+    <!-- Hearts (lives) -->
+    <LinearLayout
+        android:id="@+id/heartsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/heart1"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/cd_heart"
+            android:src="@drawable/ic_heart" />
+
+        <ImageView
+            android:id="@+id/heart2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/cd_heart"
+            android:src="@drawable/ic_heart" />
+
+        <ImageView
+            android:id="@+id/heart3"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/cd_heart"
+            android:src="@drawable/ic_heart" />
+    </LinearLayout>
+
+    <!-- Left button -->
+    <ImageButton
+        android:id="@+id/btnLeft"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_round_button"
+        android:contentDescription="@string/cd_left"
+        android:scaleType="center"
+        android:src="@drawable/ic_arrow_left" />
+
+    <!-- Right button -->
+    <ImageButton
+        android:id="@+id/btnRight"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_round_button"
+        android:contentDescription="@string/cd_right"
+        android:scaleType="center"
+        android:src="@drawable/ic_arrow_right" />
+
+</FrameLayout>
