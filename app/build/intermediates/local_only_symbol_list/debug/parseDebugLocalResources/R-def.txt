@@ -17,9 +17,12 @@ drawable ic_heart
 drawable ic_obstacle
 drawable lane_divider
 id btnLeft
+id btnPlayAgain
 id btnRight
 id car
 id gameArea
+id gameOverOverlay
+id gameOverText
 id heart1
 id heart2
 id heart3
@@ -36,4 +39,5 @@ string cd_obstacle
 string cd_right
 string crash_message
 string game_over
+string play_again
 style Theme.HW1

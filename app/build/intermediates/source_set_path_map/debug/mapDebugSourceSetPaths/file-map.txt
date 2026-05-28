@@ -1,10 +1,10 @@
-com.example.hw1.app-pngs-0 C:\Dev\Android_dev_Exes\app\build\generated\res\pngs\debug
-com.example.hw1.app-resValues-1 C:\Dev\Android_dev_Exes\app\build\generated\res\resValues\debug
-com.example.hw1.app-packageDebugResources-2 C:\Dev\Android_dev_Exes\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.hw1.app-packageDebugResources-3 C:\Dev\Android_dev_Exes\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.hw1.app-debug-4 C:\Dev\Android_dev_Exes\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.hw1.app-debug-5 C:\Dev\Android_dev_Exes\app\src\debug\res
-com.example.hw1.app-main-6 C:\Dev\Android_dev_Exes\app\src\main\res
+com.example.hw1.app-pngs-0 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\build\generated\res\pngs\debug
+com.example.hw1.app-resValues-1 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\build\generated\res\resValues\debug
+com.example.hw1.app-packageDebugResources-2 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.hw1.app-packageDebugResources-3 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.hw1.app-debug-4 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.hw1.app-debug-5 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\src\debug\res
+com.example.hw1.app-main-6 C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\src\main\res
 com.example.hw1.app-fragment-1.5.4-7 C:\Users\namei\.gradle\caches\8.9\transforms\0bb623248dc107b47613e0de61ada98a\transformed\fragment-1.5.4\res
 com.example.hw1.app-core-runtime-2.2.0-8 C:\Users\namei\.gradle\caches\8.9\transforms\223d0d665f6a9d6beb40e567f5b0d25d\transformed\core-runtime-2.2.0\res
 com.example.hw1.app-coordinatorlayout-1.1.0-9 C:\Users\namei\.gradle\caches\8.9\transforms\2403d53b8d8bb26f2d2ef9890de80733\transformed\coordinatorlayout-1.1.0\res

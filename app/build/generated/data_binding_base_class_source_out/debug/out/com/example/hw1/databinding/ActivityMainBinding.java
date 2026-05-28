@@ -4,10 +4,12 @@ package com.example.hw1.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -25,6 +27,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final ImageButton btnLeft;
 
   @NonNull
+  public final Button btnPlayAgain;
+
+  @NonNull
   public final ImageButton btnRight;
 
   @NonNull
@@ -32,6 +37,12 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @NonNull
   public final FrameLayout gameArea;
+
+  @NonNull
+  public final FrameLayout gameOverOverlay;
+
+  @NonNull
+  public final TextView gameOverText;
 
   @NonNull
   public final ImageView heart1;
@@ -55,15 +66,19 @@ public final class ActivityMainBinding implements ViewBinding {
   public final FrameLayout root;
 
   private ActivityMainBinding(@NonNull FrameLayout rootView, @NonNull ImageButton btnLeft,
-      @NonNull ImageButton btnRight, @NonNull ImageView car, @NonNull FrameLayout gameArea,
-      @NonNull ImageView heart1, @NonNull ImageView heart2, @NonNull ImageView heart3,
-      @NonNull LinearLayout heartsContainer, @NonNull View laneLine1, @NonNull View laneLine2,
-      @NonNull FrameLayout root) {
+      @NonNull Button btnPlayAgain, @NonNull ImageButton btnRight, @NonNull ImageView car,
+      @NonNull FrameLayout gameArea, @NonNull FrameLayout gameOverOverlay,
+      @NonNull TextView gameOverText, @NonNull ImageView heart1, @NonNull ImageView heart2,
+      @NonNull ImageView heart3, @NonNull LinearLayout heartsContainer, @NonNull View laneLine1,
+      @NonNull View laneLine2, @NonNull FrameLayout root) {
     this.rootView = rootView;
     this.btnLeft = btnLeft;
+    this.btnPlayAgain = btnPlayAgain;
     this.btnRight = btnRight;
     this.car = car;
     this.gameArea = gameArea;
+    this.gameOverOverlay = gameOverOverlay;
+    this.gameOverText = gameOverText;
     this.heart1 = heart1;
     this.heart2 = heart2;
     this.heart3 = heart3;
@@ -106,6 +121,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnPlayAgain;
+      Button btnPlayAgain = ViewBindings.findChildViewById(rootView, id);
+      if (btnPlayAgain == null) {
+        break missingId;
+      }
+
       id = R.id.btnRight;
       ImageButton btnRight = ViewBindings.findChildViewById(rootView, id);
       if (btnRight == null) {
@@ -121,6 +142,18 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.gameArea;
       FrameLayout gameArea = ViewBindings.findChildViewById(rootView, id);
       if (gameArea == null) {
+        break missingId;
+      }
+
+      id = R.id.gameOverOverlay;
+      FrameLayout gameOverOverlay = ViewBindings.findChildViewById(rootView, id);
+      if (gameOverOverlay == null) {
+        break missingId;
+      }
+
+      id = R.id.gameOverText;
+      TextView gameOverText = ViewBindings.findChildViewById(rootView, id);
+      if (gameOverText == null) {
         break missingId;
       }
 
@@ -162,8 +195,9 @@ public final class ActivityMainBinding implements ViewBinding {
 
       FrameLayout root = (FrameLayout) rootView;
 
-      return new ActivityMainBinding((FrameLayout) rootView, btnLeft, btnRight, car, gameArea,
-          heart1, heart2, heart3, heartsContainer, laneLine1, laneLine2, root);
+      return new ActivityMainBinding((FrameLayout) rootView, btnLeft, btnPlayAgain, btnRight, car,
+          gameArea, gameOverOverlay, gameOverText, heart1, heart2, heart3, heartsContainer,
+          laneLine1, laneLine2, root);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

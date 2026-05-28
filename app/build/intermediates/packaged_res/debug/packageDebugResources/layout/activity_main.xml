@@ -100,4 +100,43 @@
         android:scaleType="center"
         android:src="@drawable/ic_arrow_right" />
 
+    <!-- Game Over overlay (hidden until the player loses all lives) -->
+    <FrameLayout
+        android:id="@+id/gameOverOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/gameOverText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_over"
+                android:textColor="@android:color/white"
+                android:textSize="48sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnPlayAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/play_again"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </FrameLayout>
+
 </FrameLayout>

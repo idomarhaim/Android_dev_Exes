@@ -3110,6 +3110,7 @@ id blocking
 id bottom
 id bounce
 id btnLeft
+id btnPlayAgain
 id btnRight
 id buttonPanel
 id cancel_button
@@ -3201,6 +3202,8 @@ id forever
 id fragment_container_view_tag
 id fullscreen_header
 id gameArea
+id gameOverOverlay
+id gameOverText
 id ghost_view
 id ghost_view_holder
 id gone
@@ -3847,6 +3850,7 @@ string path_password_eye
 string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
+string play_again
 string search_menu_title
 string searchbar_scrolling_view_behavior
 string searchview_clear_text_content_description

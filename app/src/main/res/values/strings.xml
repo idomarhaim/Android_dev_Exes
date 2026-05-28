@@ -6,5 +6,6 @@
     <string name="cd_car">Player car</string>
     <string name="cd_obstacle">Obstacle</string>
     <string name="crash_message">Crash!</string>
-    <string name="game_over">Game Over — restarting</string>
+    <string name="game_over">Game Over</string>
+    <string name="play_again">Play Again</string>
 </resources>
