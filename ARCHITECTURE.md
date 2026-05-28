@@ -3,67 +3,103 @@
 ## 🎯 Goal
 
 Implement an endless 3-lane obstacle racing game as specified by the HW1
-assignment, with the explicit constraint **"don't work with `Canvas` — change
-position using x / y on screen"**.
+assignment, with two explicit constraints from the lecturer:
+
+1. **No `Canvas`** — don't render manually.
+2. **No `translationX` / `translationY`** either — movement must be done as a
+   sequence of image transitions (toggling visibility of pre-placed cells).
 
 ## 🧩 High-level Design
 
-The game is a single-`Activity` app. All game objects are standard Android
-`View`s that live inside a `FrameLayout` ("the road"). Movement is achieved by
-mutating each view's `translationX` / `translationY` from a `Handler`-driven
-game loop on the main thread.
+The game is a single-`Activity` app. The screen is a fixed grid of standard
+`ImageView`s. "Movement" is implemented by mutating each cell's `visibility`
+state every tick, so the picture appears to jump between cells.
 
 ```
-ConstraintLayout (root, grass background)
-├── FrameLayout (gameArea, road background)        ← 85% width, full height
-│   ├── View laneLine1 (yellow vertical divider, positioned via translationX)
-│   ├── View laneLine2 (yellow vertical divider, positioned via translationX)
-│   ├── ImageView car  (player, positioned via translationX/Y)
-│   └── ImageView obstacle * N (added dynamically, scroll via translationY)
+FrameLayout (root, grass background)
+├── FrameLayout (gameArea, road background)
+│   └── LinearLayout (vertical, full screen) — built at runtime
+│       ├── LinearLayout row 0       ┐
+│       │   ├── ImageView cell[0][0] │
+│       │   ├── ImageView cell[0][1] │  rows × cols obstacle cells
+│       │   └── ImageView cell[0][2] │  (ic_obstacle, INVISIBLE by default)
+│       ├── ...                      │
+│       ├── LinearLayout row N-1     ┘
+│       └── LinearLayout carRow
+│           ├── ImageView carCell 0  ┐
+│           ├── ImageView carCell 1  │  one ic_car per lane;
+│           └── ImageView carCell 2  ┘  only the active lane is VISIBLE
 ├── LinearLayout heartsContainer (3 heart ImageViews)
 ├── ImageButton btnLeft
-└── ImageButton btnRight
+├── ImageButton btnRight
+└── FrameLayout gameOverOverlay
+    └── LinearLayout (centered)
+        ├── TextView  "Game Over"
+        └── Button    "Play Again"
 ```
+
+All cells share `layout_weight=1`, so every row has the same height and every
+column has the same width, regardless of screen size.
 
 ## ⏱️ Game Loop
 
-Two periodic tasks run on the main `Looper` via `Handler.postDelayed`:
+A single periodic task drives the game on the main `Looper` via
+`Handler.postDelayed`:
 
-| Task         | Period             | Responsibility                          |
-| ------------ | ------------------ | --------------------------------------- |
-| `tickRunnable`  | `tickMs` (~30 ms)  | Advance each obstacle's `translationY`, detect collisions, recycle off-screen obstacles. |
-| `spawnRunnable` | `spawnIntervalMs` (~900 ms) | Create a new obstacle in a random lane at the top of the road. |
+| Task           | Period       | Responsibility                                         |
+| -------------- | ------------ | ------------------------------------------------------ |
+| `tickRunnable` | `tickMs`     | Detect collision, shift the obstacle grid down by one row, spawn a new obstacle at the top, re-render visibilities. |
 
-Both loops are started in `onResume()` and stopped in `onPause()` to avoid
-draining the battery / leaking views.
+Defaults: `rows = 12`, `cols = 3`, `tickMs = 260 ms`, `spawnChance = 0.55`.
 
-## 📐 Geometry
+A `running` flag guards both the entry and the re-scheduling of
+`tickRunnable`, so once `stopLoop()` is called no further ticks fire even if
+one was already in flight. The loop is also stopped in `onPause()` and
+restarted in `onResume()` (unless the Game Over overlay is showing).
 
-Lane geometry is computed once the `gameArea` is laid out (via a
-`OnGlobalLayoutListener`):
+## 🔁 Movement Model
 
-- `laneWidthPx = gameArea.width / 3`
-- `laneCenterX(lane) = laneWidthPx * (lane + 0.5)`
-- The two lane dividers are positioned at `laneWidthPx` and `2 * laneWidthPx`.
-- The car's resting Y is anchored near the bottom:
-  `carBaseY = gameArea.height - carHeight - 24dp`.
+State is a `Boolean[rows][cols]` array:
 
-## 💥 Collision
+```
+true  → cell is showing the obstacle image
+false → cell is INVISIBLE
+```
 
-Collision is checked per tick for every live obstacle:
+Each tick:
 
-1. The obstacle must be in the same lane index as the car.
-2. The obstacle's vertical rectangle must overlap the car's vertical rectangle.
+1. **Collision check** — if `state[rows-1][carLane] == true`, the obstacle in
+   the bottom row in the car's lane hit the car.
+2. **Shift** — copy each row's state down by one (`state[r] = state[r-1]`).
+3. **Spawn** — clear row 0 and, with probability `spawnChance`, set a random
+   lane in row 0 to `true`.
+4. **Render** — walk every cell and set `visibility = VISIBLE / INVISIBLE`
+   from the boolean state.
 
-When a collision occurs:
+The car row is a separate strip of 3 `ImageView`s; left/right buttons just
+flip which one is `VISIBLE`. No coordinates are ever computed.
 
-- The obstacle is removed from the game.
-- The device vibrates for ~250 ms (`Vibrator` / `VibratorManager` API).
-- A `Toast` with `"Crash!"` is shown.
+## 💥 Crash Handling
+
+When a collision is detected:
+
+- The device vibrates for ~250 ms (`VibratorManager` on API 31+, `Vibrator`
+  on older releases).
+- A `Toast` with `"Crash!"` is shown. A single `crashToast` reference is
+  kept and `cancel()`ed before showing the next one, so successive crashes
+  don't queue stale toasts.
 - Lives are decremented and the hearts row is updated.
-- When lives reach 0, the game shows a `"Game Over — restarting"` toast,
-  clears all obstacles, restores 3 hearts, recenters the car, and keeps
-  playing — making the game endless.
+- When lives reach `0`, `showGameOver()` stops the loop, clears the grid,
+  cancels any pending crash toast, and reveals the Game Over overlay.
+
+## 🛑 Game Over / Play Again
+
+- `gameOverOverlay` is a full-screen, semi-transparent `FrameLayout` over
+  the rest of the UI. It is `gone` at start.
+- While the overlay is `VISIBLE`, the loop is fully stopped — no background
+  ticks, no further vibrations or toasts.
+- Tapping **Play Again** hides the overlay, calls `resetGame()` (clear
+  grid, restore 3 hearts, center the car), and restarts the loop.
 
 ## 🔌 Permissions
 
@@ -73,5 +109,6 @@ declared in [`AndroidManifest.xml`](app/src/main/AndroidManifest.xml).
 ## 🚫 Non-goals
 
 - No `Canvas` / `SurfaceView` rendering (per assignment).
+- No `translationX` / `translationY` for movement (per lecturer guidance).
 - No persistence, scoring, sound, or accelerometer input (out of scope for
   HW1).

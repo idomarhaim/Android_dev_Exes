@@ -7,6 +7,7 @@ This directory contains dated changelog entries for the project.
 | Date       | File                            | Description                                            |
 | ---------- | ------------------------------- | ------------------------------------------------------ |
 | 26/05/2026 | [2026-05-26.md](2026-05-26.md)  | Initial scaffolding of HW1 — 3-lane obstacle game.     |
+| 28/05/2026 | [2026-05-28.md](2026-05-28.md)  | Visibility-grid movement model, Game Over + Play Again, loop & toast fixes, Gradle JDK pin. |
 
 ## 📝 Format
 

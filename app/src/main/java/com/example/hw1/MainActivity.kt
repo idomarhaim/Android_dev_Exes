@@ -33,17 +33,20 @@ class MainActivity : AppCompatActivity() {
     // --- Grid configuration ---
     private val rows = 12                    // number of obstacle rows
     private val cols = 3                     // number of lanes
-    private val tickMs = 350L                // one row of movement per tick
+    private val tickMs = 260L                // one row of movement per tick
     private val spawnChance = 0.55f          // chance of a new obstacle per tick
     private val maxLives = 3
 
     // --- Game state ---
     private var carLane = 1                  // 0 = left, 1 = center, 2 = right
     private var lives = maxLives
+    private var running = false
 
     private lateinit var obstacleCells: Array<Array<ImageView>>
     private lateinit var obstacleState: Array<BooleanArray>
     private lateinit var carCells: Array<ImageView>
+
+    private var crashToast: Toast? = null
 
     private val hearts: List<ImageView> by lazy {
         listOf(binding.heart1, binding.heart2, binding.heart3)
@@ -53,8 +56,9 @@ class MainActivity : AppCompatActivity() {
 
     private val tickRunnable = object : Runnable {
         override fun run() {
+            if (!running) return
             onTick()
-            mainHandler.postDelayed(this, tickMs)
+            if (running) mainHandler.postDelayed(this, tickMs)
         }
     }
 
@@ -146,10 +150,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun startLoop() {
         stopLoop()
+        running = true
         mainHandler.postDelayed(tickRunnable, tickMs)
     }
 
     private fun stopLoop() {
+        running = false
         mainHandler.removeCallbacks(tickRunnable)
     }
 
@@ -205,7 +211,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleCrash() {
         vibrate()
-        Toast.makeText(this, R.string.crash_message, Toast.LENGTH_SHORT).show()
+        crashToast?.cancel()
+        crashToast = Toast.makeText(this, R.string.crash_message, Toast.LENGTH_SHORT).also {
+            it.show()
+        }
 
         lives--
         updateHearts()
@@ -225,6 +234,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun showGameOver() {
         stopLoop()
+        crashToast?.cancel()
+        crashToast = null
         for (r in 0 until rows) for (c in 0 until cols) obstacleState[r][c] = false
         binding.gameOverOverlay.visibility = View.VISIBLE
     }
