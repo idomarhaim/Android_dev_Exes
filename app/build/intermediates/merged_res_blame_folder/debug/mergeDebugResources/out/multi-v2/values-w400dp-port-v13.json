@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.hw1.app-mergeDebugResources-2:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
+            "outputFile": "com.example.hw2.app-mergeDebugResources-2:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
             "map": [
                 {
                     "source": "C:\\Users\\namei\\.gradle\\caches\\8.9\\transforms\\da68b81801b747d9fdcc29edbf823254\\transformed\\material-1.12.0\\res\\values-w400dp-port-v13\\values-w400dp-port-v13.xml",

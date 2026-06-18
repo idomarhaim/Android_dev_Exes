@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.hw1.app-mergeDebugResources-2:/values-ldltr-v21/values-ldltr-v21.xml",
+            "outputFile": "com.example.hw2.app-mergeDebugResources-2:/values-ldltr-v21/values-ldltr-v21.xml",
             "map": [
                 {
                     "source": "C:\\Users\\namei\\.gradle\\caches\\8.9\\transforms\\9ee24078445a014eff261e54157e3baf\\transformed\\appcompat-1.7.0\\res\\values-ldltr-v21\\values-ldltr-v21.xml",

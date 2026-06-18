@@ -1,6 +1,22 @@
 [
     {
-        "merged": "com.example.hw1.app-mergeDebugResources-3:/layout/activity_main.xml",
-        "source": "com.example.hw1.app-main-6:/layout/activity_main.xml"
+        "merged": "com.example.hw2.app-mergeDebugResources-3:/layout/activity_menu.xml",
+        "source": "com.example.hw2.app-main-6:/layout/activity_menu.xml"
+    },
+    {
+        "merged": "com.example.hw2.app-mergeDebugResources-3:/layout/fragment_scores_table.xml",
+        "source": "com.example.hw2.app-main-6:/layout/fragment_scores_table.xml"
+    },
+    {
+        "merged": "com.example.hw2.app-mergeDebugResources-3:/layout/activity_high_scores.xml",
+        "source": "com.example.hw2.app-main-6:/layout/activity_high_scores.xml"
+    },
+    {
+        "merged": "com.example.hw2.app-mergeDebugResources-3:/layout/activity_game.xml",
+        "source": "com.example.hw2.app-main-6:/layout/activity_game.xml"
+    },
+    {
+        "merged": "com.example.hw2.app-mergeDebugResources-3:/layout/item_high_score.xml",
+        "source": "com.example.hw2.app-main-6:/layout/item_high_score.xml"
     }
 ]

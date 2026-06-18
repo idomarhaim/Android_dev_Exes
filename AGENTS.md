@@ -1,7 +1,9 @@
 # AGENTS.md — Android_dev_Exes
 
 Kotlin Android course project. Each exercise is a self-contained app. Current
-exercise: **HW1** — an endless 3-lane obstacle racing game.
+exercise: **HW2** — an endless obstacle racing game (built on HW1) with a menu,
+tilt/button control modes, coins, an odometer, a crash sound, and a high-scores
+screen (table + map) backed by Room.
 
 See [README.md](README.md) for the feature list and [ARCHITECTURE.md](ARCHITECTURE.md)
 for the design (movement model, game loop, crash handling). Read those before
@@ -9,12 +11,21 @@ changing game logic — don't re-derive the design.
 
 ## Project shape
 
-- Single Gradle module `:app`, namespace `com.example.hw1` (root project name is `HW1`).
-- All app logic lives in one Activity: [app/src/main/java/com/example/hw1/MainActivity.kt](app/src/main/java/com/example/hw1/MainActivity.kt).
-- UI via **View Binding** (`ActivityMainBinding`) — `buildFeatures.viewBinding = true`.
-  Use binding, not `findViewById`.
+- Single Gradle module `:app`, namespace `com.example.hw2` (root project name
+  is still `HW1`).
+- Screens (Activities): `MenuActivity` (launcher), `GameActivity` (the game),
+  `highscores/HighScoresActivity` (hosts `ScoresTableFragment` +
+  `ScoresMapFragment`, coordinated by `HighScoresViewModel`).
+- Game **state/logic** lives in the pure-Kotlin `game/GameEngine` (no Android
+  deps, JVM-unit-tested); `GameActivity` only renders it.
+- Persistence in `data/` (Room): `HighScore`, `HighScoreDao`, `AppDatabase`,
+  `HighScoreRepository`.
+- UI via **View Binding** (`buildFeatures.viewBinding = true`). Use binding,
+  not `findViewById`.
 - Layout/resources under [app/src/main/res](app/src/main/res); manifest at
   [app/src/main/AndroidManifest.xml](app/src/main/AndroidManifest.xml).
+- The high-scores **map** needs a Google Maps key: `MAPS_API_KEY` in
+  `local.properties` (manifest placeholder, falls back to a stub so it builds).
 
 ## Build & run
 
@@ -37,13 +48,16 @@ changing game logic — don't re-derive the design.
 - `org.gradle.vfs.watch=false` is intentional (avoids file-handle locks on
   Windows). Leave it off.
 
-## Game-logic constraints (HW1 — hard requirements)
+## Game-logic constraints (hard requirements)
 
 - **No `Canvas` / `SurfaceView`.** No `translationX` / `translationY` for
   movement. "Movement" is done by toggling each `ImageView` cell's
   `visibility` every tick. Preserve this model when editing the game loop.
-- Game state is a `Boolean[rows][cols]` grid; the car row is a separate strip
-  of 3 cells where only the active lane is `VISIBLE`. See ARCHITECTURE.md.
+- Game state is owned by `game/GameEngine` (`Boolean[rows][cols]` grids for
+  obstacles and coins; `rows=16`, `cols=5`). `GameActivity` reads the engine
+  and renders; keep logic in the engine so the unit tests stay meaningful.
+- The car row is a separate strip of `cols` cells where only the active lane
+  is `VISIBLE`. See ARCHITECTURE.md.
 - The `running` flag must gate every tick re-schedule; the loop stops in
   `onPause()` and while the Game Over overlay is visible.
 

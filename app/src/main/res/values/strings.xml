@@ -1,11 +1,33 @@
 <resources>
-    <string name="app_name">HW1</string>
+    <string name="app_name">Racer HW2</string>
+
+    <!-- Content descriptions -->
     <string name="cd_left">Move left</string>
     <string name="cd_right">Move right</string>
     <string name="cd_heart">Life</string>
     <string name="cd_car">Player car</string>
     <string name="cd_obstacle">Obstacle</string>
+    <string name="cd_coin">Coin</string>
+
+    <!-- Game -->
     <string name="crash_message">Crash!</string>
     <string name="game_over">Game Over</string>
     <string name="play_again">Play Again</string>
+    <string name="menu">Menu</string>
+    <string name="distance_format">Distance: %1$d</string>
+    <string name="coins_format">Coins: %1$d</string>
+    <string name="final_score_format">Score: %1$d\nDistance %2$d · Coins %3$d</string>
+
+    <!-- Menu -->
+    <string name="mode_buttons_slow">Buttons — Slow</string>
+    <string name="mode_buttons_fast">Buttons — Fast</string>
+    <string name="mode_sensor">Tilt Sensor</string>
+    <string name="high_scores">High Scores</string>
+
+    <!-- High scores -->
+    <string name="back">Back</string>
+    <string name="no_scores">No high scores yet — play a game!</string>
+    <string name="rank_format">%1$d.</string>
+    <string name="score_format">Score: %1$d</string>
+    <string name="score_details_format">Distance %1$d · Coins %2$d</string>
 </resources>

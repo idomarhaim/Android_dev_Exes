@@ -24,6 +24,28 @@ appears to jump from one cell to the next.
 - ⏸️ Game is fully paused while the Game Over overlay is showing
   (no background ticks, no phantom crashes)
 
+### 🏎️ HW2 — Menu, Sensors, Coins & High Scores
+
+A large expansion of HW1 (package renamed `com.example.hw1` →
+`com.example.hw2`). The visibility-toggling movement model is unchanged.
+
+**Features**
+
+- 📋 **Menu screen** (launcher) — three modes: Buttons–Slow, Buttons–Fast,
+  Tilt Sensor — plus a link to the High Scores screen
+- 🛣️ **Wider + longer road**: 5 lanes × 16 rows
+- 🪙 **Coins** that spawn on the road and add a bonus to the score
+- 📏 **Odometer** (distance) + coins counter in the HUD
+- 📱 **Tilt to steer** via the accelerometer; **bonus**: tilt forward/back for speed
+- 🔊 **Crash sound** (`ToneGenerator`) in addition to vibration
+- 🏆 **High Scores screen** — two fragments: a **top-ten table** (Room) and a
+  **map** of where each score was achieved; tapping a row re-centres the map
+- 💾 Score (`distance + coins × bonus`) + device location persisted in **Room**
+- 🖼️ Custom **app icon**
+
+> The map needs a Google Maps API key. Put `MAPS_API_KEY=...` in
+> `local.properties`; without it the app still builds and the map is blank.
+
 ## 🛠️ Tech
 
 - Language: **Kotlin**
@@ -48,11 +70,17 @@ app/
 ├── build.gradle.kts
 └── src/main/
     ├── AndroidManifest.xml
-    ├── java/com/example/hw1/MainActivity.kt
+    ├── java/com/example/hw2/
+    │   ├── MenuActivity.kt          # launcher: mode picker + High Scores
+    │   ├── GameActivity.kt          # the game screen (renders GameEngine)
+    │   ├── game/                    # GameEngine (pure logic), GameMode
+    │   ├── data/                    # Room: HighScore, DAO, DB, repository
+    │   └── highscores/             # HighScores activity + table/map fragments
     └── res/
-        ├── drawable/         # vector assets (car, obstacle, hearts, arrows)
-        ├── layout/activity_main.xml
+        ├── drawable/         # vector assets (car, obstacle, coin, hearts, …)
+        ├── layout/           # menu, game, high-scores, fragment, item
         └── values/           # strings, colors, themes
+app/src/test/java/com/example/hw2/game/GameEngineTest.kt   # JVM unit tests
 build.gradle.kts              # root build file
 settings.gradle.kts           # module declarations
 gradle.properties             # pins Gradle JDK to Adoptium JDK 17

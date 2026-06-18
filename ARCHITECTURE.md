@@ -110,5 +110,66 @@ declared in [`AndroidManifest.xml`](app/src/main/AndroidManifest.xml).
 
 - No `Canvas` / `SurfaceView` rendering (per assignment).
 - No `translationX` / `translationY` for movement (per lecturer guidance).
-- No persistence, scoring, sound, or accelerometer input (out of scope for
-  HW1).
+
+---
+
+# 🏗️ Architecture — HW2
+
+HW2 keeps the HW1 movement model verbatim (visibility toggling) and grows it
+into a multi-screen app. Package renamed `com.example.hw1` → `com.example.hw2`.
+
+## 🧭 Screens
+
+```
+MenuActivity (launcher)
+├── Buttons–Slow / Buttons–Fast / Tilt Sensor → GameActivity (mode via Intent)
+└── High Scores → HighScoresActivity
+                  ├── ScoresMapFragment   (SupportMapFragment subclass)
+                  └── ScoresTableFragment (RecyclerView)
+                      └── both share HighScoresViewModel (activity scope)
+```
+
+## 🧠 GameEngine (pure logic, unit-tested)
+
+Game state moved out of the Activity into `game/GameEngine` — no Android deps,
+so it runs under plain JUnit. It owns two `Boolean[rows][cols]` grids
+(obstacles + coins, `rows=16`, `cols=5`), the car lane, lives, distance and
+coin count. `tick()` advances the odometer, resolves whatever reached the car
+row (obstacle → crash, coin → pickup), shifts the grids down and spawns a new
+top row, returning a `TickResult` (`crashed`, `coinCollected`, `gameOver`).
+`GameActivity` renders the engine by toggling `ImageView` visibility — still
+no Canvas, no translation.
+
+- **Score** = `distance + coinCount × COIN_BONUS`.
+
+## 🎮 Control modes
+
+`GameMode` (enum) carries a `tickMs` and a `usesSensor` flag:
+
+- `BUTTONS_SLOW` / `BUTTONS_FAST` — on-screen arrows; slow/fast differ in pace.
+- `SENSOR` — accelerometer: x-axis past a threshold (with a cooldown) steps the
+  car a lane; **bonus** — the y-axis scales the scroll speed (`effectiveTickMs`).
+
+## 🔊 Crash sound
+
+A `ToneGenerator` plays a short alert tone on crash (and a beep on coin
+pickup) — chosen over a raw audio asset so there's no binary to ship. Released
+in `onDestroy`. Vibration + toast from HW1 are retained.
+
+## 💾 Persistence (Room)
+
+`data/`: `HighScore` entity (score, distance, coins, lat/lng, `hasLocation`,
+timestamp), `HighScoreDao` (`topTen()` = `ORDER BY score DESC LIMIT 10` as a
+`Flow`, plus `insert`), `AppDatabase` (singleton), `HighScoreRepository`. On
+game over `GameActivity` grabs the last known location
+(`FusedLocationProviderClient`, `ACCESS_FINE_LOCATION` requested at runtime)
+and inserts the score via `lifecycleScope`.
+
+## 🗺️ High scores screen
+
+`HighScoresViewModel` (AndroidViewModel) exposes `scores` (LiveData from the
+Room Flow) and a `selected` score. `ScoresTableFragment` lists them; a row tap
+calls `viewModel.select(...)`. `ScoresMapFragment` (a `SupportMapFragment`)
+drops a marker per located score and animates the camera to the selected one.
+The map needs a Google Maps key (`MAPS_API_KEY` in `local.properties`, exposed
+as a manifest placeholder; falls back to a stub so the build never breaks).
