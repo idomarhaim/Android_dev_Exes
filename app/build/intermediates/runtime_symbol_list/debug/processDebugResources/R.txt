@@ -2139,6 +2139,10 @@ int color ripple_material_dark 0x7f050309
 int color ripple_material_light 0x7f05030a
 int color road_gray 0x7f05030b
 int color row_selected 0x7f05030c
+int color row_text_normal 0x7f05031a
+int color row_text_normal_secondary 0x7f05031b
+int color row_text_selected 0x7f05031c
+int color row_text_selected_secondary 0x7f05031d
 int color secondary_text_default_material_dark 0x7f05030d
 int color secondary_text_default_material_light 0x7f05030e
 int color secondary_text_disabled_material_dark 0x7f05030f

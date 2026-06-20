@@ -8,7 +8,11 @@
     <color name="primary">#388E3C</color>
     <color name="primary_dark">#2E7D32</color>
     <color name="road_gray">#3A3A3A</color>
-    <color name="row_selected">#FFF59D</color>
+    <color name="row_selected">#FFF176</color>
+    <color name="row_text_normal">#FFFFFFFF</color>
+    <color name="row_text_normal_secondary">#C7C7C7</color>
+    <color name="row_text_selected">#1A1A1A</color>
+    <color name="row_text_selected_secondary">#4A4A4A</color>
     <color name="white">#FFFFFFFF</color>
     <string name="app_name">Racer HW2</string>
     <string name="back">Back</string>

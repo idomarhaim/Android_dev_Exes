@@ -9,6 +9,10 @@ color primary
 color primary_dark
 color road_gray
 color row_selected
+color row_text_normal
+color row_text_normal_secondary
+color row_text_selected
+color row_text_selected_secondary
 color white
 drawable bg_road
 drawable bg_round_button

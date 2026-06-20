@@ -2140,6 +2140,10 @@ color ripple_material_dark
 color ripple_material_light
 color road_gray
 color row_selected
+color row_text_normal
+color row_text_normal_secondary
+color row_text_selected
+color row_text_selected_secondary
 color secondary_text_default_material_dark
 color secondary_text_default_material_light
 color secondary_text_disabled_material_dark
