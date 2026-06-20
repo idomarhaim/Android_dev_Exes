@@ -67,8 +67,10 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     // --- Sensor state ---
     private var sensorManager: SensorManager? = null
     private var accelerometer: Sensor? = null
-    private var lastTiltMoveMs = 0L
-    private var speedFactor = 1f     // bonus: tilt back/forth changes speed
+    // Edge-trigger guard: the car only steps a lane once per tilt, and re-arms
+    // when the phone returns near level. Keeps a single tilt to a single lane.
+    private var tiltArmed = true
+    private var speedFactor = 1f     // bonus: tilt forward/back changes speed
 
     private val hearts: List<ImageView> by lazy {
         listOf(binding.heart1, binding.heart2, binding.heart3)
@@ -303,16 +305,23 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         val x = event.values[0]   // left/right tilt
         val y = event.values[1]   // forward/back tilt (bonus: speed)
 
-        // Bonus: tilt back and forth changes the scroll speed.
-        speedFactor = (1f + (y / SensorManager.GRAVITY_EARTH) * 0.8f)
+        // Bonus: tilt the phone forward to speed up, back to slow down.
+        // Held upright y is ~+9.8; tilting forward lowers y, so a negative
+        // coefficient makes forward => faster.
+        speedFactor = (1f - (y / SensorManager.GRAVITY_EARTH) * 0.8f)
             .coerceIn(0.6f, 1.8f)
 
-        val now = System.currentTimeMillis()
-        if (abs(x) > TILT_THRESHOLD && now - lastTiltMoveMs > TILT_COOLDOWN_MS) {
+        // Steering: one lane per deliberate tilt. Move when the tilt crosses the
+        // threshold, then wait until the phone is brought back near level
+        // before allowing the next move (hysteresis) so a single tilt can't skip
+        // several lanes at once.
+        if (abs(x) < TILT_RELEASE) {
+            tiltArmed = true
+        } else if (tiltArmed && abs(x) > TILT_THRESHOLD) {
             // Tilt right (negative x in portrait) => move right, and vice versa.
             val direction = if (x < 0) +1 else -1
             onMove(direction)
-            lastTiltMoveMs = now
+            tiltArmed = false
         }
     }
 
@@ -479,7 +488,9 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     companion object {
-        private const val TILT_THRESHOLD = 2.2f
-        private const val TILT_COOLDOWN_MS = 220L
+        // Tilt past THRESHOLD steps one lane; must fall back below RELEASE to
+        // re-arm. The gap between them debounces noise around the trigger.
+        private const val TILT_THRESHOLD = 3.0f
+        private const val TILT_RELEASE = 1.5f
     }
 }
