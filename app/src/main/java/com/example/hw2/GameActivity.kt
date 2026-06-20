@@ -34,6 +34,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -68,6 +69,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private var sensorManager: SensorManager? = null
     private var accelerometer: Sensor? = null
     private var speedFactor = 1f     // bonus: tilt forward/back changes speed
+    private var filteredTiltX = 0f   // low-pass filtered sideways tilt
 
     private val hearts: List<ImageView> by lazy {
         listOf(binding.heart1, binding.heart2, binding.heart3)
@@ -228,6 +230,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private fun startLoop() {
         stopLoop()
         running = true
+        filteredTiltX = 0f   // start level so the car doesn't snap on resume
         mainHandler.postDelayed(tickRunnable, effectiveTickMs())
     }
 
@@ -317,12 +320,22 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
 
         // Steering: map the tilt angle directly to a lane. A small tilt nudges
         // one lane from the centre; a strong (>= MAX_TILT) tilt drives the car
-        // all the way to the edge lane, however briefly it is held. Tilt right
-        // (negative x in portrait) => higher lane index.
+        // all the way to the edge lane. Tilt right (negative x in portrait) =>
+        // higher lane index.
+        //
+        // The raw accelerometer is noisy, so we (1) low-pass filter it to stop
+        // the value jittering, and (2) only switch lanes once the smoothed
+        // position is clearly inside a new lane (deadband), so the car settles
+        // on one lane instead of flickering between two.
+        filteredTiltX += TILT_SMOOTHING * (x - filteredTiltX)
+
         val centre = (cols - 1) / 2f
-        val fraction = (-x / MAX_TILT).coerceIn(-1f, 1f)
-        val targetLane = (centre + fraction * centre).roundToInt().coerceIn(0, cols - 1)
-        setCarLane(targetLane)
+        val fraction = (-filteredTiltX / MAX_TILT).coerceIn(-1f, 1f)
+        val pos = centre + fraction * centre            // continuous lane position
+        val current = engine.carLane
+        if (abs(pos - current) > LANE_HYSTERESIS) {
+            setCarLane(pos.roundToInt().coerceIn(0, cols - 1))
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { /* no-op */ }
@@ -492,5 +505,11 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         // drives the car to the edge lane. Smaller tilts map proportionally, so
         // a gentle tilt is a one-lane nudge and a firm tilt reaches the edge.
         private const val MAX_TILT = 6.0f
+        // Low-pass smoothing factor for the sideways tilt (0..1): smaller is
+        // smoother but laggier. Tames raw accelerometer noise.
+        private const val TILT_SMOOTHING = 0.2f
+        // How far (in lanes) the smoothed position must move past the current
+        // lane before the car commits to a new one. Stops boundary flicker.
+        private const val LANE_HYSTERESIS = 0.6f
     }
 }
