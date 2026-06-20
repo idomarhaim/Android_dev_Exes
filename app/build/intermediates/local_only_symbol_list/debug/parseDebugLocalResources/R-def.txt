@@ -50,6 +50,7 @@ id txtDetails
 id txtDistance
 id txtEmpty
 id txtFinalScore
+id txtMapUnavailable
 id txtRank
 id txtScore
 layout activity_game
@@ -71,6 +72,7 @@ string distance_format
 string final_score_format
 string game_over
 string high_scores
+string map_unavailable
 string menu
 string mode_buttons_fast
 string mode_buttons_slow

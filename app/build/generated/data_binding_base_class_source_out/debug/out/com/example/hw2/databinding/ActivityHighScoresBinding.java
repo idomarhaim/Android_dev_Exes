@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentContainerView;
@@ -29,12 +30,17 @@ public final class ActivityHighScoresBinding implements ViewBinding {
   @NonNull
   public final FragmentContainerView tableFragment;
 
+  @NonNull
+  public final TextView txtMapUnavailable;
+
   private ActivityHighScoresBinding(@NonNull LinearLayout rootView, @NonNull Button btnBack,
-      @NonNull FragmentContainerView mapFragment, @NonNull FragmentContainerView tableFragment) {
+      @NonNull FragmentContainerView mapFragment, @NonNull FragmentContainerView tableFragment,
+      @NonNull TextView txtMapUnavailable) {
     this.rootView = rootView;
     this.btnBack = btnBack;
     this.mapFragment = mapFragment;
     this.tableFragment = tableFragment;
+    this.txtMapUnavailable = txtMapUnavailable;
   }
 
   @Override
@@ -82,8 +88,14 @@ public final class ActivityHighScoresBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.txtMapUnavailable;
+      TextView txtMapUnavailable = ViewBindings.findChildViewById(rootView, id);
+      if (txtMapUnavailable == null) {
+        break missingId;
+      }
+
       return new ActivityHighScoresBinding((LinearLayout) rootView, btnBack, mapFragment,
-          tableFragment);
+          tableFragment, txtMapUnavailable);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

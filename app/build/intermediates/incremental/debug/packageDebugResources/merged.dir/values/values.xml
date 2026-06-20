@@ -28,6 +28,7 @@
     <string name="final_score_format">Score: %1$d\nDistance %2$d · Coins %3$d</string>
     <string name="game_over">Game Over</string>
     <string name="high_scores">High Scores</string>
+    <string name="map_unavailable">Map unavailable — no Google Maps API key is set.\nAdd a real key to local.properties (MAPS_API_KEY) and rebuild.</string>
     <string name="menu">Menu</string>
     <string name="mode_buttons_fast">Buttons — Fast</string>
     <string name="mode_buttons_slow">Buttons — Slow</string>

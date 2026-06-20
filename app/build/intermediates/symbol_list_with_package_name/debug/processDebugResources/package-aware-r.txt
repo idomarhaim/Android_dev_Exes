@@ -3692,6 +3692,7 @@ id txtDetails
 id txtDistance
 id txtEmpty
 id txtFinalScore
+id txtMapUnavailable
 id txtRank
 id txtScore
 id unchecked
@@ -4020,6 +4021,7 @@ string m3_sys_motion_easing_linear
 string m3_sys_motion_easing_standard
 string m3_sys_motion_easing_standard_accelerate
 string m3_sys_motion_easing_standard_decelerate
+string map_unavailable
 string material_clock_display_divider
 string material_clock_toggle_content_description
 string material_hour_24h_suffix

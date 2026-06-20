@@ -75,7 +75,7 @@
 46        <meta-data
 47            android:name="com.google.android.geo.API_KEY"
 47-->C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\src\main\AndroidManifest.xml:20:13-58
-48            android:value="YOUR_API_KEY_HERE" />
+48            android:value="AIzaSyBUfWnFYAoLwthbJW7yTUoLEUN3ELVjCAc" />
 48-->C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\src\main\AndroidManifest.xml:21:13-44
 49        <meta-data
 49-->C:\Dev_No-OneDrive_sync\Android_dev_Exes\app\src\main\AndroidManifest.xml:22:9-24:69
