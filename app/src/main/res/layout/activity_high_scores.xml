@@ -34,12 +34,30 @@
     </LinearLayout>
 
     <!-- Map fragment: locations where the top scores were achieved. -->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/mapFragment"
-        android:name="com.example.hw2.highscores.ScoresMapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mapFragment"
+            android:name="com.example.hw2.highscores.ScoresMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Shown (over the blank map) when no Google Maps API key is set. -->
+        <TextView
+            android:id="@+id/txtMapUnavailable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#EEFFFFFF"
+            android:gravity="center"
+            android:padding="24dp"
+            android:text="@string/map_unavailable"
+            android:textColor="#B71C1C"
+            android:textSize="15sp"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <!-- Table fragment: the top-ten scores. -->
     <androidx.fragment.app.FragmentContainerView

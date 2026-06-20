@@ -34,7 +34,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.launch
-import kotlin.math.abs
+import kotlin.math.roundToInt
 
 /**
  * HW2 — the game screen. Reuses the HW1 visibility-toggling grid model
@@ -67,9 +67,6 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     // --- Sensor state ---
     private var sensorManager: SensorManager? = null
     private var accelerometer: Sensor? = null
-    // Edge-trigger guard: the car only steps a lane once per tilt, and re-arms
-    // when the phone returns near level. Keeps a single tilt to a single lane.
-    private var tiltArmed = true
     private var speedFactor = 1f     // bonus: tilt forward/back changes speed
 
     private val hearts: List<ImageView> by lazy {
@@ -292,6 +289,13 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         if (engine.carLane != previous) updateCarCell(previous)
     }
 
+    /** Place the car on an absolute lane (used by the tilt sensor). */
+    private fun setCarLane(target: Int) {
+        val previous = engine.carLane
+        engine.setLane(target)
+        if (engine.carLane != previous) updateCarCell(previous)
+    }
+
     private fun updateCarCell(previousLane: Int) {
         carCells[previousLane].visibility = View.INVISIBLE
         carCells[engine.carLane].visibility = View.VISIBLE
@@ -311,18 +315,14 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         speedFactor = (1f - (y / SensorManager.GRAVITY_EARTH) * 0.8f)
             .coerceIn(0.6f, 1.8f)
 
-        // Steering: one lane per deliberate tilt. Move when the tilt crosses the
-        // threshold, then wait until the phone is brought back near level
-        // before allowing the next move (hysteresis) so a single tilt can't skip
-        // several lanes at once.
-        if (abs(x) < TILT_RELEASE) {
-            tiltArmed = true
-        } else if (tiltArmed && abs(x) > TILT_THRESHOLD) {
-            // Tilt right (negative x in portrait) => move right, and vice versa.
-            val direction = if (x < 0) +1 else -1
-            onMove(direction)
-            tiltArmed = false
-        }
+        // Steering: map the tilt angle directly to a lane. A small tilt nudges
+        // one lane from the centre; a strong (>= MAX_TILT) tilt drives the car
+        // all the way to the edge lane, however briefly it is held. Tilt right
+        // (negative x in portrait) => higher lane index.
+        val centre = (cols - 1) / 2f
+        val fraction = (-x / MAX_TILT).coerceIn(-1f, 1f)
+        val targetLane = (centre + fraction * centre).roundToInt().coerceIn(0, cols - 1)
+        setCarLane(targetLane)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { /* no-op */ }
@@ -488,9 +488,9 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     companion object {
-        // Tilt past THRESHOLD steps one lane; must fall back below RELEASE to
-        // re-arm. The gap between them debounces noise around the trigger.
-        private const val TILT_THRESHOLD = 3.0f
-        private const val TILT_RELEASE = 1.5f
+        // Accelerometer x reading (m/s^2) treated as a "full" sideways tilt that
+        // drives the car to the edge lane. Smaller tilts map proportionally, so
+        // a gentle tilt is a one-lane nudge and a firm tilt reaches the edge.
+        private const val MAX_TILT = 6.0f
     }
 }

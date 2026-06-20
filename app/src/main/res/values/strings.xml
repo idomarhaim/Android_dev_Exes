@@ -30,4 +30,5 @@
     <string name="rank_format">%1$d.</string>
     <string name="score_format">Score: %1$d</string>
     <string name="score_details_format">Distance %1$d · Coins %2$d</string>
+    <string name="map_unavailable">Map unavailable — no Google Maps API key is set.\nAdd a real key to local.properties (MAPS_API_KEY) and rebuild.</string>
 </resources>
