@@ -3,6 +3,7 @@ package com.example.hw2.highscores
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hw2.R
 import com.example.hw2.data.HighScore
@@ -62,6 +63,21 @@ class ScoresAdapter(
             binding.txtDate.text = DateFormat
                 .getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                 .format(Date(item.timestamp))
+
+            // Keep text readable on both the dark normal row and the yellow
+            // highlighted (selected) row.
+            val primary = ContextCompat.getColor(
+                ctx, if (selected) R.color.row_text_selected else R.color.row_text_normal
+            )
+            val secondary = ContextCompat.getColor(
+                ctx,
+                if (selected) R.color.row_text_selected_secondary else R.color.row_text_normal_secondary
+            )
+            binding.txtRank.setTextColor(primary)
+            binding.txtScore.setTextColor(primary)
+            binding.txtDetails.setTextColor(secondary)
+            binding.txtDate.setTextColor(secondary)
+
             binding.root.isSelected = selected
             binding.root.setBackgroundResource(
                 if (selected) R.color.row_selected else android.R.color.transparent

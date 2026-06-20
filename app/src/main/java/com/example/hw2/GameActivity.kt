@@ -29,7 +29,10 @@ import com.example.hw2.data.HighScoreRepository
 import com.example.hw2.databinding.ActivityGameBinding
 import com.example.hw2.game.GameEngine
 import com.example.hw2.game.GameMode
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -390,20 +393,49 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         val distance = engine.distance
         val coins = engine.coinCount
 
-        if (hasLocationPermission()) {
-            try {
-                val client = LocationServices.getFusedLocationProviderClient(this)
-                client.lastLocation
-                    .addOnSuccessListener { loc ->
-                        persist(score, distance, coins, loc?.latitude, loc?.longitude)
+        if (!hasLocationPermission()) {
+            persist(score, distance, coins, null, null)
+            return
+        }
+
+        try {
+            val client = LocationServices.getFusedLocationProviderClient(this)
+            client.lastLocation
+                .addOnSuccessListener { loc ->
+                    if (loc != null) {
+                        persist(score, distance, coins, loc.latitude, loc.longitude)
+                    } else {
+                        // A cached location isn't always available (e.g. right
+                        // after boot); ask for a fresh fix instead.
+                        requestCurrentLocation(client, score, distance, coins)
                     }
-                    .addOnFailureListener {
-                        persist(score, distance, coins, null, null)
-                    }
-            } catch (_: SecurityException) {
-                persist(score, distance, coins, null, null)
-            }
-        } else {
+                }
+                .addOnFailureListener {
+                    requestCurrentLocation(client, score, distance, coins)
+                }
+        } catch (_: SecurityException) {
+            persist(score, distance, coins, null, null)
+        }
+    }
+
+    private fun requestCurrentLocation(
+        client: FusedLocationProviderClient,
+        score: Int,
+        distance: Int,
+        coins: Int,
+    ) {
+        try {
+            client.getCurrentLocation(
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                CancellationTokenSource().token
+            )
+                .addOnSuccessListener { loc ->
+                    persist(score, distance, coins, loc?.latitude, loc?.longitude)
+                }
+                .addOnFailureListener {
+                    persist(score, distance, coins, null, null)
+                }
+        } catch (_: SecurityException) {
             persist(score, distance, coins, null, null)
         }
     }

@@ -9,5 +9,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="button_pink">#E91E63</color>
     <color name="coin_gold">#FFC107</color>
-    <color name="row_selected">#FFF59D</color>
+    <color name="row_selected">#FFF176</color>
+
+    <!-- High-score row text (kept readable in both the normal dark row and the
+         highlighted yellow selected row). -->
+    <color name="row_text_normal">#FFFFFFFF</color>
+    <color name="row_text_normal_secondary">#C7C7C7</color>
+    <color name="row_text_selected">#1A1A1A</color>
+    <color name="row_text_selected_secondary">#4A4A4A</color>
 </resources>

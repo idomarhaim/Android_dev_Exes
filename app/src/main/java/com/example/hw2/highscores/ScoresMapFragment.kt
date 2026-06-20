@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 
 /**
@@ -41,16 +42,40 @@ class ScoresMapFragment : SupportMapFragment(), OnMapReadyCallback {
     private fun renderMarkers(scores: List<HighScore>) {
         val gmap = map ?: return
         gmap.clear()
-        scores.filter { it.hasLocation }.forEachIndexed { index, score ->
+
+        val located = scores.filter { it.hasLocation }
+        if (located.isEmpty()) return
+
+        val bounds = LatLngBounds.Builder()
+        located.forEach { score ->
+            val position = LatLng(score.latitude, score.longitude)
             gmap.addMarker(
                 MarkerOptions()
-                    .position(LatLng(score.latitude, score.longitude))
+                    .position(position)
                     .title(getString(R.string.score_format, score.score))
                     .snippet(
                         getString(R.string.score_details_format, score.distance, score.coins)
                     )
             )?.tag = score.id
-            if (index == 0) focusOn(score)
+            bounds.include(position)
+        }
+
+        // Frame all markers (or zoom to the only one). newLatLngBounds needs the
+        // map to be laid out, so fall back to a plain zoom if it isn't yet.
+        if (located.size == 1) {
+            val only = located.first()
+            gmap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(LatLng(only.latitude, only.longitude), 13f)
+            )
+        } else {
+            try {
+                gmap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), MAP_PADDING_PX))
+            } catch (_: IllegalStateException) {
+                val first = located.first()
+                gmap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(LatLng(first.latitude, first.longitude), 11f)
+                )
+            }
         }
     }
 
@@ -62,5 +87,9 @@ class ScoresMapFragment : SupportMapFragment(), OnMapReadyCallback {
                 LatLng(score.latitude, score.longitude), 14f
             )
         )
+    }
+
+    companion object {
+        private const val MAP_PADDING_PX = 96
     }
 }
